@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div ref="title" class="title-container title-container-bg" :class="{ titleMarquee: isTitleMarquee }">
-      <p ref="titleContent" class="title" :text="title">{{ title }}</p>
+    <div ref="title" class="title title-bg" :class="{ titleMarquee: isTitleMarquee }">
+      <p ref="titleContent" class="title-content" :text="title">{{ title }}</p>
     </div>
     <div class="list-container" :style="`height: ${height}`">
-      <div id="con1" ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
+      <div ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
         <div v-for="(item, index) in list" :key="index" class="content">
-          <div class="level">{{ item.label }}</div>
+          <div class="label">{{ item.label }}</div>
           <div
             class="text"
             :class="{ contentMarquee: isContentMarquee }"
@@ -109,30 +109,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 实现内容无缝跑马灯效果
-@genDistance: -120%;
-.titleMarquee {
-  p {
-    position: relative;
-    width: fit-content;
-    animation: marqueeAnim 6s linear infinite;
-    &::after {
-      position: absolute;
-      right: @genDistance;
-      content: attr(text);
-    }
-  }
-}
+@contentPaddingLeft: 16px;
 
-@keyframes marqueeAnim {
-  0% {
-    transform: translateX(0px);
-  }
-  100% {
-    transform: translateX(@genDistance);
-  }
-}
-// 跑马灯结束
 .list-container {
   overflow: hidden;
   transition: all 0.5s;
@@ -140,16 +118,11 @@ export default {
 .anim {
   transition: all 0.5s;
 }
-#con1 li {
-  list-style: none;
-  line-height: 34px;
-  height: 34px;
-}
 .content {
   color: #fff;
   display: flex;
   margin: 2px 0;
-  .level {
+  .label {
     font-size: 20px;
     box-sizing: border-box;
     width: 36px;
@@ -165,6 +138,10 @@ export default {
       rgba(26, 82, 244, 0.6) 100%
     );
     margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .text {
     font-size: 20px;
@@ -184,25 +161,12 @@ export default {
       width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
+      padding-left: @contentPaddingLeft;
     }
   }
 }
 
-.contentMarquee {
-  &:hover p:extend(.titleMarquee) {
-    width: fit-content;
-    overflow: initial;
-    text-overflow: unset;
-    animation: marqueeAnim 6s linear infinite;
-    &::after {
-      position: absolute;
-      right: @genDistance;
-      content: attr(text);
-      z-index: -1; // 防止文字过长时与前面的文字重叠
-    }
-  }
-}
-.title-container {
+.title {
   display: flex;
   width: 100%;
   white-space: nowrap;
@@ -218,14 +182,66 @@ export default {
       rgba(26, 82, 244, 0.6) 100%
     );
   }
+  &-content {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: normal;
+    font-stretch: normal;
+    color: #ffffff;
+  }
 }
 
-.title {
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-  font-weight: normal;
-  font-stretch: normal;
-  color: #ffffff;
+// 实现内容无缝跑马灯效果
+@titleDistance: -120%;
+@contentDistance: -120%;
+@titleDuration: 6s;
+@contentDuration: 6s;
+
+@keyframes titleMarqueeAnim {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(@titleDistance);
+  }
 }
+
+.titleMarquee {
+  p {
+    position: relative;
+    width: fit-content;
+    animation: titleMarqueeAnim @titleDuration linear infinite;
+    &::after {
+      position: absolute;
+      right: @titleDistance;
+      content: attr(text);
+    }
+  }
+}
+
+@keyframes contentMarqueeAnim {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(@contentDistance));
+  }
+}
+
+.contentMarquee {
+  &:hover p {
+    width: fit-content;
+    overflow: initial;
+    text-overflow: unset;
+    animation: contentMarqueeAnim @contentDuration linear infinite;
+    &::after {
+      position: absolute;
+      right: @contentDistance;
+      content: attr(text);
+      z-index: -1; // 防止文字过长时与前面的文字重叠
+    }
+  }
+}
+// 跑马灯结束
 </style>
