@@ -1,20 +1,20 @@
 <template>
   <div>
-    <div ref="title" class="title-container title-container-bg">
-      <p ref="titleContent" class="title" :class="{ titleMarquee: isTitleMarquee }" :text="title">{{ title }}</p>
+    <div ref="title" class="title-container title-container-bg" :class="{ titleMarquee: isTitleMarquee }">
+      <p ref="titleContent" class="title" :text="title">{{ title }}</p>
     </div>
     <div class="list-container" :style="`height: ${height}`">
       <div id="con1" ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
         <div v-for="(item, index) in list" :key="index" class="content">
           <div class="level">{{ item.label }}</div>
-          <div class="text" @click="getContent(item)">
-            <p
-              :text="item.value"
-              class="text-content"
-              :class="{ contentMarquee: isContentMarquee }"
-              @mouseenter="contentEnter"
-              @mouseleave="contentLeave"
-            >
+          <div
+            class="text"
+            :class="{ contentMarquee: isContentMarquee }"
+            @click="getContent(item)"
+            @mouseenter="contentEnter"
+            @mouseleave="contentLeave"
+          >
+            <p :text="item.value" class="text-content">
               {{ item.value }}
             </p>
           </div>
@@ -76,10 +76,10 @@ export default {
       }, 500);
     },
     contentEnter(mouseEvent) {
-      const {
-        target: { clientWidth, scrollWidth },
-      } = mouseEvent;
-      this.isContentMarquee = scrollWidth > clientWidth;
+      const { clientWidth, scrollWidth } = mouseEvent.path[0].children[0];
+      if (this.isContentMarquee === false && scrollWidth > clientWidth) {
+        this.isContentMarquee = true;
+      }
     },
     contentLeave() {
       this.isContentMarquee = false;
@@ -92,9 +92,9 @@ export default {
       this.startScroll(); // 鼠标离开启动定时器，执行 scroll
     },
     startScroll() {
-      if (this.timer === null && this.list.length > this.rowLen) {
-        this.timer = setInterval(this.scroll, 2000);
-      }
+      // if (this.timer === null && this.list.length > this.rowLen) {
+      //   this.timer = setInterval(this.scroll, 2000);
+      // }
     },
     getContent(item) {
       this.$emit('contentClick', item);
@@ -112,13 +112,15 @@ export default {
 // 实现内容无缝跑马灯效果
 @genDistance: -120%;
 .titleMarquee {
-  position: relative;
-  width: fit-content;
-  animation: marqueeAnim 6s linear infinite;
-  &::after {
-    position: absolute;
-    right: @genDistance;
-    content: attr(text);
+  p {
+    position: relative;
+    width: fit-content;
+    animation: marqueeAnim 6s linear infinite;
+    &::after {
+      position: absolute;
+      right: @genDistance;
+      content: attr(text);
+    }
   }
 }
 
@@ -177,7 +179,6 @@ export default {
     text-align: left;
     cursor: pointer;
     &:hover:extend(.title-container) {
-      background: #010138;
     }
     &-content {
       width: 100%;
@@ -188,16 +189,17 @@ export default {
 }
 
 .contentMarquee {
-  &:hover:extend(.titleMarquee) {
+  &:hover p:extend(.titleMarquee) {
     width: fit-content;
     overflow: initial;
     text-overflow: unset;
-  }
-  &::after {
-    position: absolute;
-    right: @genDistance;
-    content: attr(text);
-    z-index: -1; // 防止文字过长时与前面的文字重叠
+    animation: marqueeAnim 6s linear infinite;
+    &::after {
+      position: absolute;
+      right: @genDistance;
+      content: attr(text);
+      z-index: -1; // 防止文字过长时与前面的文字重叠
+    }
   }
 }
 .title-container {
