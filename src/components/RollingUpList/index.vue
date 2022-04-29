@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="marquee-block title-container">
-      <p class="marquee-words title" :text="title">{{ title }}</p>
+    <div class="title-container title-container-bg">
+      <p class="title" :class="{ titleMarquee: isTitleMarquee }" :text="title">{{ title }}</p>
     </div>
     <div class="list-container" :style="`height: ${height}`">
       <div id="con1" ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
@@ -11,7 +11,7 @@
             <p
               :text="item.value"
               class="text-content"
-              :class="{ isMarquee: isMarqueeAnimate }"
+              :class="{ contentMarquee: isContentMarquee }"
               @mouseenter="contentEnter"
               @mouseleave="contentLeave"
             >
@@ -49,7 +49,8 @@ export default {
     return {
       animate: false,
       timer: null,
-      isMarqueeAnimate: false,
+      isTitleMarquee: false,
+      isContentMarquee: false,
     };
   },
   mounted() {
@@ -77,10 +78,10 @@ export default {
       const {
         target: { clientWidth, scrollWidth },
       } = mouseEvent;
-      this.isMarqueeAnimate = scrollWidth > clientWidth;
+      this.isContentMarquee = scrollWidth > clientWidth;
     },
     contentLeave() {
-      this.isMarqueeAnimate = false;
+      this.isContentMarquee = false;
     },
     mEnter() {
       clearInterval(this.timer); // 鼠标移入清除定时器
@@ -103,33 +104,19 @@ export default {
 
 <style lang="less" scoped>
 // 实现内容无缝跑马灯效果
-// 这个值越大，跑马灯首尾相接距离越大
 @genDistance: -120%;
-.marquee-block {
-  width: 100%;
-  background-image: linear-gradient(
-    270deg,
-    rgba(70, 142, 253, 0.1) 0%,
-    rgba(66, 137, 252, 0.14) 15%,
-    rgba(57, 125, 250, 0.24) 39%,
-    rgba(43, 105, 247, 0.4) 69%,
-    rgba(26, 82, 244, 0.6) 100%
-  );
-  white-space: nowrap;
-  overflow: hidden;
-}
-.marquee-words {
+.titleMarquee {
   position: relative;
   width: fit-content;
-  animation: marquee 6s linear infinite;
-}
-.marquee-words::after {
-  position: absolute;
-  right: @genDistance;
-  content: attr(text);
+  animation: marqueeAnim 6s linear infinite;
+  &::after {
+    position: absolute;
+    right: @genDistance;
+    content: attr(text);
+  }
 }
 
-@keyframes marquee {
+@keyframes marqueeAnim {
   0% {
     transform: translateX(0px);
   }
@@ -183,7 +170,7 @@ export default {
     text-overflow: ellipsis;
     text-align: left;
     cursor: pointer;
-    &:hover:extend(.marquee-block) {
+    &:hover:extend(.title-container) {
       background: #010138;
     }
     &-content {
@@ -194,8 +181,8 @@ export default {
   }
 }
 
-.isMarquee {
-  &:hover:extend(.marquee-words) {
+.contentMarquee {
+  &:hover:extend(.titleMarquee) {
     width: fit-content;
     overflow: initial;
     text-overflow: unset;
@@ -204,11 +191,25 @@ export default {
     position: absolute;
     right: @genDistance;
     content: attr(text);
+    z-index: -1; // 防止文字过长时与前面的文字重叠
   }
 }
 .title-container {
-  height: 40px;
   display: flex;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  &-bg {
+    height: 40px;
+    background-image: linear-gradient(
+      270deg,
+      rgba(70, 142, 253, 0.1) 0%,
+      rgba(66, 137, 252, 0.14) 15%,
+      rgba(57, 125, 250, 0.24) 39%,
+      rgba(43, 105, 247, 0.4) 69%,
+      rgba(26, 82, 244, 0.6) 100%
+    );
+  }
 }
 
 .title {
