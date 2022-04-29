@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      title: '我是一条长长长长长长长长长长长长长长长长长长得标题',
+      title: '我是一条短标题',
       list: [
         { label: '1', value: '我是一条短信息' },
         { label: '1', value: '我是一条短信息' },
