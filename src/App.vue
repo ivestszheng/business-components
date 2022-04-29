@@ -2,9 +2,9 @@
   <div id="app">
     <nav>
       <router-link to="/home"> Home </router-link>|
-      <router-link to="/compositionApi"> CompositionApi </router-link>
+      <router-link to="/rolling-up-list"> RollingUpList </router-link>
     </nav>
-    <router-view />
+    <router-view class="router-view" />
   </div>
 </template>
 
@@ -26,5 +26,10 @@ nav {
       color: #42b983;
     }
   }
+}
+
+.router-view {
+  display: flex;
+  justify-content: center;
 }
 </style>

@@ -15,14 +15,9 @@ const routes: Array<RouteConfig> = [
     component: HomeView,
   },
   {
-    path: '/compositionApi',
-    name: 'compositionApi',
-    component: () => import('@/views/CompositionApi.vue'),
-  },
-  {
-    path: '/axiosUse',
+    path: '/rolling-up-list',
     name: 'axiosUse',
-    component: () => import('@/views/AxiosUse.vue'),
+    component: () => import('@/views/RollingUpListView/index.vue'),
   },
 ];
 
