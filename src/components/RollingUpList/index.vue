@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="title-container title-container-bg">
-      <p class="title" :class="{ titleMarquee: isTitleMarquee }" :text="title">{{ title }}</p>
+    <div ref="title" class="title-container title-container-bg">
+      <p ref="titleContent" class="title" :class="{ titleMarquee: isTitleMarquee }" :text="title">{{ title }}</p>
     </div>
     <div class="list-container" :style="`height: ${height}`">
       <div id="con1" ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
@@ -55,6 +55,7 @@ export default {
   },
   mounted() {
     this.startScroll();
+    this.judgeIsTitleMarquee();
   },
   destroyed() {
     clearInterval(this.timer); // 防止造成不可预测的 bug
@@ -97,6 +98,11 @@ export default {
     },
     getContent(item) {
       this.$emit('contentClick', item);
+    },
+    judgeIsTitleMarquee() {
+      const { clientWidth } = this.$refs.title;
+      const { scrollWidth } = this.$refs.titleContent;
+      this.isTitleMarquee = scrollWidth > clientWidth;
     },
   },
 };
