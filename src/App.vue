@@ -31,5 +31,8 @@ nav {
 .router-view {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

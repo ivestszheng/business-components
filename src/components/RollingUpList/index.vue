@@ -1,11 +1,10 @@
 <template>
-  <!-- vue 实现无限向上滚动 -->
   <div>
-    <div class="marquee-block">
+    <div class="marquee-block title-container">
       <p class="marquee-words title" :text="title">{{ title }}</p>
     </div>
-    <div id="box" :style="`height: ${height}`">
-      <div id="con1" ref="con1" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
+    <div class="list-container" :style="`height: ${height}`">
+      <div id="con1" ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
         <div v-for="(item, index) in list" :key="index" class="content">
           <div class="level">{{ item.label }}</div>
           <div class="text" @click="getContent(item)">
@@ -53,23 +52,24 @@ export default {
       isMarqueeAnimate: false,
     };
   },
-  watch: {
-    list() {
-      this.startScroll();
-    },
+  mounted() {
+    this.startScroll();
+  },
+  destroyed() {
+    clearInterval(this.timer); // 防止造成不可预测的 bug
   },
   methods: {
     scroll() {
       // 建一个方法
-      const { con1 } = this.$refs;
-      con1.style.marginTop = '-36px'; // 设置style样式 向上移动36px
+      const { list } = this.$refs;
+      list.style.marginTop = '-36px'; // 设置style样式 向上移动36px
       this.animate = !this.animate; //
       setTimeout(() => {
         const newList = this.list;
         newList.push(this.list[0]);
         newList.shift();
         this.$emit('update:list', newList);
-        con1.style.marginTop = '0px'; // 设置style样式 向上移动30px 再回到原位
+        list.style.marginTop = '0px'; // 设置style样式 向上移动30px 再回到原位
         this.animate = !this.animate; // 这个地方如果不把animate 取反会出现消息回滚的现象，此时把ul 元素的过渡属性取消掉就可以完美实现无缝滚动的效果了
       }, 500);
     },
@@ -90,9 +90,9 @@ export default {
       this.startScroll(); // 鼠标离开启动定时器，执行 scroll
     },
     startScroll() {
-      // if (this.timer === null && this.list.length > this.rowLen) {
-      //   this.timer = setInterval(this.scroll, 2000);
-      // }
+      if (this.timer === null && this.list.length > this.rowLen) {
+        this.timer = setInterval(this.scroll, 2000);
+      }
     },
     getContent(item) {
       this.$emit('contentClick', item);
@@ -102,8 +102,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 实现无缝跑马灯效果
-@gendistance: -100%;
+// 实现内容无缝跑马灯效果
+// 这个值越大，跑马灯首尾相接距离越大
+@genDistance: -120%;
 .marquee-block {
   width: 100%;
   background-image: linear-gradient(
@@ -121,24 +122,23 @@ export default {
   position: relative;
   width: fit-content;
   animation: marquee 6s linear infinite;
-  padding-left: 50px;
 }
 .marquee-words::after {
   position: absolute;
-  right: @gendistance;
+  right: @genDistance;
   content: attr(text);
 }
 
 @keyframes marquee {
   0% {
-    transform: translateX(50px);
+    transform: translateX(0px);
   }
   100% {
-    transform: translateX(@gendistance);
+    transform: translateX(@genDistance);
   }
 }
 // 跑马灯结束
-#box {
+.list-container {
   overflow: hidden;
   transition: all 0.5s;
 }
@@ -169,19 +169,19 @@ export default {
       rgba(43, 105, 247, 0.4) 69%,
       rgba(26, 82, 244, 0.6) 100%
     );
+    margin-right: 10px;
   }
   .text {
     font-size: 20px;
     width: 100%;
     height: 34px;
     line-height: 34px;
-    margin-left: 5px;
-    padding-left: 20px;
     width: 100%;
     background-color: #010138;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
     cursor: pointer;
     &:hover:extend(.marquee-block) {
       background: #010138;
@@ -202,22 +202,21 @@ export default {
   }
   &::after {
     position: absolute;
-    right: @gendistance;
+    right: @genDistance;
     content: attr(text);
   }
 }
+.title-container {
+  height: 40px;
+  display: flex;
+}
 
 .title {
-  width: 100%;
-  height: 34px;
   display: flex;
   align-items: center;
-  font-family: Alibaba-PuHuiTi-R;
   font-size: 20px;
   font-weight: normal;
   font-stretch: normal;
-  line-height: 17px;
-  letter-spacing: 1px;
   color: #ffffff;
 }
 </style>

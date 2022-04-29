@@ -1,6 +1,24 @@
 <template>
   <div>
-    <RolingUpList class="rolling-up-list-case" :title="title" height="180px" :row-len="1" :list="list" @contentClick="handleContentClick" />
+    <!-- 需要传入不同的数据源，否则作用域无法被隔离 -->
+    <RolingUpList
+      ref="rul1"
+      class="rolling-up-list-case"
+      :title="list1.title"
+      height="180px"
+      :row-len="1"
+      :list="list1.value"
+      @contentClick="handleContentClick"
+    />
+    <RolingUpList
+      ref="rul2"
+      class="rolling-up-list-case"
+      :title="list2.title"
+      height="180px"
+      :row-len="1"
+      :list="list2.value"
+      @contentClick="handleContentClick"
+    />
   </div>
 </template>
 
@@ -14,15 +32,28 @@ export default {
   },
   data() {
     return {
-      title: '我是一条短标题',
-      list: [
-        { label: '1', value: '我是一条短信息' },
-        { label: '1', value: '我是一条短信息' },
-        { label: '1', value: '我是一条短信息' },
-        { label: '1', value: '我是一条短信息' },
-        { label: '1', value: '我是一条短信息' },
-        { label: '1', value: '我是一条短信息' },
-      ],
+      list1: {
+        title: '我是一条很短的标题',
+        value: [
+          { label: '1', value: '我是一条短信息' },
+          { label: '2', value: '我是一条短信息' },
+          { label: '3', value: '我是一条短信息' },
+          { label: '4', value: '我是一条短信息' },
+          { label: '5', value: '我是一条很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的信息' },
+          { label: '6', value: '我是一条短信息' },
+        ],
+      },
+      list2: {
+        title: '我是一条很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的标题',
+        value: [
+          { label: '1', value: '我是一条短信息' },
+          { label: '2', value: '我是一条短信息' },
+          { label: '3', value: '我是一条短信息' },
+          { label: '4', value: '我是一条短信息' },
+          { label: '5', value: '我是一条很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的信息' },
+          { label: '6', value: '我是一条短信息' },
+        ],
+      },
     };
   },
   methods: {
