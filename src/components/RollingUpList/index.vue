@@ -7,7 +7,9 @@
       <div ref="list" :class="{ anim: animate == true }" @mouseenter="mEnter" @mouseleave="mLeave">
         <div v-for="(item, index) in list" :key="index" class="content">
           <div class="label">{{ item.label }}</div>
+
           <div
+            v-if="isModeCarousel"
             class="text"
             :class="{ contentMarquee: isContentMarquee }"
             @click="getContent(item)"
@@ -17,6 +19,14 @@
             <p :text="item.value" class="text-content">
               {{ item.value }}
             </p>
+          </div>
+
+          <div v-else-if="isModePopover" class="text" @click="getContent(item)">
+            <el-popover placement="top" width="200" trigger="hover" :content="item.value" :open-delay="500">
+              <p slot="reference" :text="item.value" class="text-content">
+                {{ item.value }}
+              </p>
+            </el-popover>
           </div>
         </div>
       </div>
@@ -44,6 +54,10 @@ export default {
       type: Number,
       default: 5,
     },
+    mode: {
+      type: String,
+      default: 'carousel',
+    },
   },
   data() {
     return {
@@ -52,6 +66,14 @@ export default {
       isTitleMarquee: false,
       isContentMarquee: false,
     };
+  },
+  computed: {
+    isModeCarousel() {
+      return this.mode === 'carousel';
+    },
+    isModePopover() {
+      return this.mode === 'popover';
+    },
   },
   mounted() {
     this.startScroll();
@@ -92,9 +114,9 @@ export default {
       this.startScroll(); // 鼠标离开启动定时器，执行 scroll
     },
     startScroll() {
-      // if (this.timer === null && this.list.length > this.rowLen) {
-      //   this.timer = setInterval(this.scroll, 2000);
-      // }
+      if (this.timer === null && this.list.length > this.rowLen) {
+        this.timer = setInterval(this.scroll, 2000);
+      }
     },
     getContent(item) {
       this.$emit('contentClick', item);
@@ -122,6 +144,7 @@ export default {
   color: #fff;
   display: flex;
   margin: 2px 0;
+
   .label {
     font-size: 20px;
     box-sizing: border-box;
@@ -155,8 +178,7 @@ export default {
     text-overflow: ellipsis;
     text-align: left;
     cursor: pointer;
-    &:hover:extend(.title-container) {
-    }
+
     &-content {
       width: 100%;
       overflow: hidden;
@@ -171,6 +193,7 @@ export default {
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
+
   &-bg {
     height: 40px;
     background-image: linear-gradient(
@@ -182,6 +205,7 @@ export default {
       rgba(26, 82, 244, 0.6) 100%
     );
   }
+
   &-content {
     display: flex;
     align-items: center;
@@ -235,6 +259,7 @@ export default {
     overflow: initial;
     text-overflow: unset;
     animation: contentMarqueeAnim @contentDuration linear infinite;
+
     &::after {
       position: absolute;
       right: @contentDistance;
