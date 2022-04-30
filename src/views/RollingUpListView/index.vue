@@ -21,7 +21,7 @@
       :list="list2.value"
       @contentClick="handleContentClick"
     />
-    <PopoverRollingUpList
+    <RolingUpList
       v-show="isPopoverMode"
       class="rolling-up-list-case"
       height="180px"
@@ -37,17 +37,14 @@
 <script>
 import RolingUpList from '@/components/RollingUpList/index.vue';
 
-const PopoverRollingUpList = () => import('@/components/RollingUpList/index.vue');
-
 export default {
   name: 'RollingUpListView',
   components: {
     RolingUpList,
-    PopoverRollingUpList,
   },
   data() {
     return {
-      isPopoverMode: true,
+      isPopoverMode: false,
       list1: {
         title: '我是一条长度非常非常非常非常非常非常非常非常非常极限的标题',
         value: [
