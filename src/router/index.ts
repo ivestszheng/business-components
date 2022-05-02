@@ -19,6 +19,11 @@ const routes: Array<RouteConfig> = [
     name: 'RollingUpList',
     component: () => import('@/views/RollingUpListView/index.vue'),
   },
+  {
+    path: '/tree-in-select',
+    name: 'TreeInSelect',
+    component: () => import('@/views/TreeInSelect/index.vue'),
+  },
 ];
 
 const router = new VueRouter({
