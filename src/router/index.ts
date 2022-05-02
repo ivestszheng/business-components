@@ -11,12 +11,12 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/home',
-    name: 'home',
+    name: 'Home',
     component: HomeView,
   },
   {
     path: '/rolling-up-list',
-    name: 'axiosUse',
+    name: 'RollingUpList',
     component: () => import('@/views/RollingUpListView/index.vue'),
   },
 ];

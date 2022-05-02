@@ -1,13 +1,17 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/home"> Home </router-link>|
-      <router-link to="/rolling-up-list"> RollingUpList </router-link>
-    </nav>
+    <CustomNav />
     <router-view class="router-view" />
   </div>
 </template>
+<script>
+import CustomNav from '@/components/CustomNav/nav';
 
+export default {
+  name: 'App',
+  components: { CustomNav },
+};
+</script>
 <style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -16,17 +20,6 @@
   text-align: center;
   color: #2c3e50;
   overflow: scroll;
-}
-
-nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 
 .router-view {
