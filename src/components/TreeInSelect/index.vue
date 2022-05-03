@@ -59,6 +59,7 @@
       <div>内容：{{ selectTree }}</div>
       <div>长度：{{ selectTreeValue.length }}</div>
       <div>内容：{{ selectTreeValue }}</div>
+      <el-button style="margin: 10px 0" @click="selectAll">全选</el-button>
     </div>
   </div>
 </template>
@@ -241,6 +242,43 @@ export default {
           break;
       }
       /* eslint-disable no-param-reassign */
+    },
+    // 树全选
+    selectAll() {
+      const allNodes = this.getAllNodes(this.data);
+
+      this.$refs.tree.setCheckedKeys(allNodes);
+      if (this.chooseParentNode) {
+        // 需要手动维护 selectTree 和 selectTreeValue
+        const vitrualNodes = this.$refs.tree.getCheckedNodes(false, false);
+
+        this.selectTree = [];
+        this.selectTreeValue = [];
+        vitrualNodes.forEach((node) => {
+          node.mark = 1;
+          this.selectTree.push(node.label);
+          this.selectTreeValue.push(node);
+        });
+
+        console.log(vitrualNodes);
+      }
+    },
+    // 获取所有节点
+    getAllNodes(nodes = [], arr = []) {
+      // for (const item of nodes) {
+      //   const parentArr = [];
+
+      //   arr.push(item.id);
+      //   if (item.children) parentArr.push(...item.children);
+      //   if (parentArr && parentArr.length) this.getAllNodes(parentArr, arr);
+      // }
+      nodes.forEach((item) => {
+        const parentArr = [];
+        arr.push(item.id);
+        if (item.children) parentArr.push(...item.children);
+        if (parentArr && parentArr.length) this.getAllNodes(parentArr, arr);
+      });
+      return arr;
     },
   },
 };

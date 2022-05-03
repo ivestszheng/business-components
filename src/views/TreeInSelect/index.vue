@@ -1,13 +1,9 @@
 <template>
   <div>
-    <el-switch
-      v-model="isChosenParrentNode"
-      active-color="#13ce66"
-      inactive-color="#ff4949"
-      inactive-text="默认模式"
-      active-text="可单独选中父节点"
-    >
-    </el-switch>
+    <div class="switch-btn">
+      可单端选中父节点：
+      <el-switch v-model="isChosenParrentNode" active-color="#13ce66" inactive-color="#ff4949"> </el-switch>
+    </div>
     <TreeInSelect :data="dataSource" :choose-parent-node="isChosenParrentNode" />
   </div>
 </template>
@@ -76,4 +72,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.switch-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 200px;
+  margin-bottom: 10px;
+}
+</style>
