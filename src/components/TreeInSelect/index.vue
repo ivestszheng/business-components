@@ -13,7 +13,8 @@
         @clear="handleClear"
         @remove-tag="handleRemoveTag"
       >
-        <el-option :value="selectTreeValue" style="height: auto">
+        <!-- option 上不加 disabled 会导致可以直接点击背景空白部分选中 -->
+        <el-option :value="selectTreeValue" style="height: auto" disabled>
           <el-tree
             ref="tree"
             :data="data"
@@ -40,7 +41,7 @@
         class="select-tree"
         @change="selectChange"
       >
-        <el-option :value="selectTreeValue" style="height: auto">
+        <el-option :value="selectTreeValue" style="height: auto" disabled>
           <el-tree
             ref="tree"
             :data="data"
@@ -92,6 +93,7 @@ export default {
         const actualNode = this.$refs.tree.getNode(vitrualNode.id);
         actualNode.data.mark = 0;
         actualNode.checked = false;
+        actualNode.indeterminate = false;
       });
     },
     // select框值改变时候触发的事件
@@ -162,7 +164,6 @@ export default {
     },
     judgeMark(currentObj = {}) {
       /* eslint-disable no-param-reassign */
-
       const removeNode = (obj) => {
         for (let index = 0; index < this.selectTree.length; index += 1) {
           const ele = this.selectTree[index];
@@ -223,6 +224,8 @@ export default {
           if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
             currentObj.mark = 2;
             this.$refs.tree.setChecked(currentObj.id, true);
+            this.$refs.tree.getNode(currentObj.id).indeterminate = true;
+
             changeChildrenStatusToFalse(currentObj.children);
           } else {
             currentObj.mark = 0;
