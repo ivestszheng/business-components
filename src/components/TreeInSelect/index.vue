@@ -164,6 +164,7 @@ export default {
       this.judgeMark(currentObj);
     },
     judgeMark(currentObj = {}) {
+      let isNoChildrenSelected = true;
       /* eslint-disable no-param-reassign */
       const removeNode = (obj) => {
         for (let index = 0; index < this.selectTree.length; index += 1) {
@@ -184,6 +185,7 @@ export default {
 
       const changeChildrenStatusToFalse = (children) => {
         children.forEach((child) => {
+          if (child.mark) isNoChildrenSelected = false;
           child.mark = 0;
           this.$refs.tree.setChecked(child.id, false);
           removeNode(child);
@@ -193,53 +195,62 @@ export default {
         });
       };
 
-      switch (currentObj.mark) {
-        case undefined:
-          Object.defineProperty(currentObj, 'mark', {
-            value: 1,
-            writable: true,
-          });
-          this.$refs.tree.setChecked(currentObj.id, true);
-          this.selectTreeValue.push(currentObj);
-          this.selectTree.push(currentObj.label);
+      const changeChildrenStatusToTrue = (children) => {
+        children.forEach((child) => {
+          child.mark = 1;
+          this.$refs.tree.setChecked(child.id, true);
+          const isHasSameValue = this.selectTree.some((element) => element === child.label);
 
-          if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
-            currentObj.children.forEach((child) => {
-              this.judgeMark(child);
-            });
+          if (!isHasSameValue) {
+            this.selectTree.push(child.label);
+            this.selectTreeValue.push(child);
           }
-          break;
-        case 0:
-          currentObj.mark = 1;
-          this.$refs.tree.setChecked(currentObj.id, true);
-          this.selectTreeValue.push(currentObj);
-          this.selectTree.push(currentObj.label);
 
-          if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
-            currentObj.children.forEach((child) => {
-              this.judgeMark(child);
-            });
+          if (Object.prototype.hasOwnProperty.call(child, 'children')) {
+            changeChildrenStatusToTrue(child.children);
           }
-          break;
-        case 1:
-          if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
+        });
+      };
+      if ([undefined, 0].includes(currentObj.mark)) {
+        currentObj.mark = 1;
+        this.$refs.tree.setChecked(currentObj.id, true);
+        this.selectTreeValue.push(currentObj);
+        this.selectTree.push(currentObj.label);
+
+        if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
+          changeChildrenStatusToTrue(currentObj.children);
+        }
+      } else if (currentObj.mark === 1) {
+        if (Object.prototype.hasOwnProperty.call(currentObj, 'children')) {
+          changeChildrenStatusToFalse(currentObj.children);
+
+          if (isNoChildrenSelected) {
+            currentObj.mark = 0;
+            this.$refs.tree.setChecked(currentObj.id, false);
+            this.$refs.tree.getNode(currentObj.id).indeterminate = false;
+
+            const labelIndex = this.selectTree.indexOf(currentObj.label);
+            const valueIndex = this.selectTreeValue.findIndex((element) => element.id === currentObj.id);
+
+            if (labelIndex !== -1) {
+              this.selectTree.splice(labelIndex, 1);
+            }
+            if (valueIndex !== -1) {
+              this.selectTreeValue.splice(valueIndex, 1);
+            }
+          } else {
             currentObj.mark = 2;
             this.$refs.tree.setChecked(currentObj.id, true);
             this.$refs.tree.getNode(currentObj.id).indeterminate = true;
-
-            changeChildrenStatusToFalse(currentObj.children);
-          } else {
-            currentObj.mark = 0;
-            this.$refs.tree.setChecked(currentObj.id, false);
-            removeNode(currentObj);
           }
-          break;
-        case 2:
+        } else {
           currentObj.mark = 0;
+          this.$refs.tree.setChecked(currentObj.id, false);
           removeNode(currentObj);
-          break;
-        default:
-          break;
+        }
+      } else if (currentObj.mark === 2) {
+        currentObj.mark = 0;
+        removeNode(currentObj);
       }
       /* eslint-disable no-param-reassign */
     },
@@ -265,13 +276,6 @@ export default {
     },
     // 获取所有节点
     getAllNodes(nodes = [], arr = []) {
-      // for (const item of nodes) {
-      //   const parentArr = [];
-
-      //   arr.push(item.id);
-      //   if (item.children) parentArr.push(...item.children);
-      //   if (parentArr && parentArr.length) this.getAllNodes(parentArr, arr);
-      // }
       nodes.forEach((item) => {
         const parentArr = [];
         arr.push(item.id);
