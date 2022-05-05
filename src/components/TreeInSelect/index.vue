@@ -9,6 +9,7 @@
         placeholder="请选择"
         :popper-append-to-body="false"
         multiple
+        collapse-tags
         class="select-tree"
         @clear="handleClear"
         @remove-tag="handleRemoveTag"
@@ -38,6 +39,7 @@
         placeholder="请选择"
         :popper-append-to-body="false"
         multiple
+        collapse-tags
         class="select-tree"
         @change="selectChange"
       >
