@@ -46,7 +46,8 @@ export default {
     return {
       isPopoverMode: false,
       list1: {
-        title: '我是一条长度非常非常非常非常非常非常非常非常非常极限的标题',
+        // title: '我是一条长度非常非常非常非常非常非常非常非常非常极限的标题',
+        title: '我是一条短的标题',
         value: [
           { label: '1', value: '我是一条短信息' },
           { label: '2', value: '我是一条短信息' },

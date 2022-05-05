@@ -195,6 +195,9 @@ export default {
   overflow: hidden;
 
   &-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 40px;
     background-image: linear-gradient(
       270deg,
