@@ -75,9 +75,25 @@ export default {
       return this.mode === 'popover';
     },
   },
+  watch: {
+    title() {
+      this.$nextTick(() => {
+        this.judgeIsTitleMarquee();
+      });
+    },
+    list() {
+      clearInterval(this.timer);
+      this.timer = null;
+      this.$nextTick(() => {
+        this.startScroll();
+      });
+    },
+  },
   mounted() {
-    this.startScroll();
-    this.judgeIsTitleMarquee();
+    this.$nextTick(() => {
+      this.startScroll();
+      this.judgeIsTitleMarquee();
+    });
   },
   destroyed() {
     clearInterval(this.timer); // 防止造成不可预测的 bug
