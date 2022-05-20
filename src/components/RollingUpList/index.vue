@@ -98,8 +98,21 @@ export default {
       }, 500);
     },
     contentEnter(mouseEvent) {
-      const { clientWidth, scrollWidth } = mouseEvent.path[0].children[0];
-      if (this.isContentMarquee === false && scrollWidth > clientWidth) {
+      let sw = 0;
+      let cw = 0;
+
+      if (Object.prototype.hasOwnProperty.call(mouseEvent, 'path')) {
+        const { clientWidth, scrollWidth } = mouseEvent.path[0].children[0];
+        cw = clientWidth;
+        sw = scrollWidth;
+      } else {
+        // 火狐浏览器
+        const { clientWidth, scrollWidth } = mouseEvent.currentTarget.children[0];
+        cw = clientWidth;
+        sw = scrollWidth;
+      }
+
+      if (this.isContentMarquee === false && sw > cw) {
         this.isContentMarquee = true;
       }
     },
@@ -193,11 +206,7 @@ export default {
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
-
   &-bg {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 40px;
     background-image: linear-gradient(
       270deg,
@@ -216,6 +225,7 @@ export default {
     font-weight: normal;
     font-stretch: normal;
     color: #ffffff;
+    padding-left: 8px;
   }
 }
 
