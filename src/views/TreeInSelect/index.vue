@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="switch-btns">
-      可单端选中父节点：
+      单独选中父节点：
       <el-switch v-model="isChosenParrentNode" active-color="#13ce66" inactive-color="#ff4949"> </el-switch>
     </div>
     <TreeInSelect :data="dataSource" :choose-parent-node="isChosenParrentNode" />

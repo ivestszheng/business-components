@@ -1,19 +1,20 @@
 <template>
   <el-tree
-    :data="data"
+    :data="dataSource"
     node-key="id"
     default-expand-all
     draggable
-    :props="defaultProps"
+    accordion
+    :props="props"
     :allow-drop="allowDrop"
     :allow-drag="allowDrag"
     @node-drag-start="handleDragStart"
-    @node-drag-enter="handleDragEnter"
-    @node-drag-leave="handleDragLeave"
-    @node-drag-over="handleDragOver"
     @node-drag-end="handleDragEnd"
     @node-drop="handleDrop"
   >
+    <span slot-scope="{ data }" class="custom-tree-node">
+      <span> <i :class="data.icon"></i>{{ data.label }} </span>
+    </span>
   </el-tree>
 </template>
 
@@ -22,11 +23,11 @@ export default {
   name: 'CustomElTree',
   components: {},
   props: {
-    data: {
+    dataSource: {
       type: Array,
       default: () => [],
     },
-    defaultProps: {
+    props: {
       type: Object,
       default: () => {
         return { children: 'children', label: 'label' };
@@ -37,21 +38,9 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {};
-  },
   methods: {
     handleDragStart(node, ev) {
       console.log('drag start', node);
-    },
-    handleDragEnter(draggingNode, dropNode, ev) {
-      console.log('tree drag enter: ', dropNode.label);
-    },
-    handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('tree drag leave: ', dropNode.label);
-    },
-    handleDragOver(draggingNode, dropNode, ev) {
-      console.log('tree drag over: ', draggingNode, dropNode, ev);
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
       console.log('tree drag end: ', dropNode && dropNode.label, dropType);
@@ -60,16 +49,12 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType);
     },
     allowDrop(draggingNode, dropNode, type) {
-      if (dropNode.data.label === '二级 3-1') {
-        return type !== 'inner';
-      }
+      if (this.sameLevelDrop) return draggingNode.parent === dropNode.parent && type !== 'inner';
       return true;
     },
     allowDrag(draggingNode) {
-      return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
+      return true;
     },
   },
 };
 </script>
-
-<style></style>

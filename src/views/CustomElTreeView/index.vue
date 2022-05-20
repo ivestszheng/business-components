@@ -1,15 +1,9 @@
 <template>
   <div>
     <div class="switch-btns">
-      <el-switch
-        v-model="isSameLevelDrop"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        inactive-text="无拖拽限制"
-        active-text="只允许同级上下拖拽"
-      />
+      <el-switch v-model="isSameLevelDrop" active-color="#13ce66" inactive-color="#ff4949" active-text="同级拖拽" inactive-text="无限制" />
     </div>
-    <CustomTree :data="dataSource" :same-level-drop="isSameLevelDrop" />
+    <CustomTree :data-source="dataSource" :same-level-drop="isSameLevelDrop" />
   </div>
 </template>
 
@@ -28,6 +22,7 @@ export default {
         {
           id: 1,
           label: '一级 1',
+          icon: 'el-icon-user',
           children: [
             {
               id: 4,
