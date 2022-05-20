@@ -13,4 +13,3 @@
 | height | 列表的高度（不算 title 部分）                    | `String` | -         | '500px'    |
 | rowLen | 列表的行数，超出部分会被隐藏，以向上滚动形式展示 | `Number` | -         | 5          |
 | mode   | 展示列表超出部分内容的模式                       | `String` | 'popover' | 'carousel' |
-

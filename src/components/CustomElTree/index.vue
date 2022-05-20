@@ -32,6 +32,10 @@ export default {
         return { children: 'children', label: 'label' };
       },
     },
+    sameLevelDrop: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {};
@@ -47,7 +51,7 @@ export default {
       console.log('tree drag leave: ', dropNode.label);
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('tree drag over: ', dropNode.label);
+      console.log('tree drag over: ', draggingNode, dropNode, ev);
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
       console.log('tree drag end: ', dropNode && dropNode.label, dropType);

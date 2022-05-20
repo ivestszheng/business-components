@@ -1,6 +1,15 @@
 <template>
   <div>
-    <CustomTree :data="dataSource" />
+    <div class="switch-btns">
+      <el-switch
+        v-model="isSameLevelDrop"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        inactive-text="无拖拽限制"
+        active-text="只允许同级上下拖拽"
+      />
+    </div>
+    <CustomTree :data="dataSource" :same-level-drop="isSameLevelDrop" />
   </div>
 </template>
 
@@ -14,6 +23,7 @@ export default {
   },
   data() {
     return {
+      isSameLevelDrop: true,
       dataSource: [
         {
           id: 1,
