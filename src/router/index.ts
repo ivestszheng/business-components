@@ -24,6 +24,11 @@ const routes: Array<RouteConfig> = [
     name: 'TreeInSelect',
     component: () => import('@/views/TreeInSelect/index.vue'),
   },
+  {
+    path: '/el-tree',
+    name: 'ElTree',
+    component: () => import('@/views/CustomElTreeView/index.vue'),
+  },
 ];
 
 const router = new VueRouter({
